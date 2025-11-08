@@ -1,0 +1,52 @@
+name: my_template
+description: Feature-based clean architecture Flutter template.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  get: ^4.6.6
+  get_storage: ^2.1.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  firebase_core: ^2.25.4
+  firebase_analytics: ^10.10.4
+  firebase_crashlytics: ^3.5.4
+  dio: ^5.4.3
+  fpdart: ^1.1.1
+  intl: ^0.19.0
+  equatable: ^2.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.14
+  freezed: ^2.5.6
+  json_serializable: ^6.7.1
+  mocktail: ^1.0.3
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/animations/
+    - assets/svgs/
+    - assets/fonts/
+  fonts:
+    - family: Urbanist
+      fonts:
+        - asset: assets/fonts/Urbanist-Regular.ttf
+        - asset: assets/fonts/Urbanist-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Urbanist-SemiBold.ttf
+          weight: 600
