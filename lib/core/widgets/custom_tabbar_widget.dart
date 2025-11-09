@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:my_template/core/widgets/custom_text_widget.dart';
+
 import '../../config/app_colors.dart';
 import '../utils/shared.dart';
-import '../core.dart';
+import 'custom_text_widget.dart';
 
 
 class CustomTabbarWidget extends StatelessWidget {
@@ -69,14 +69,13 @@ class CustomTabbarWidget extends StatelessWidget {
           child: ValueListenableBuilder(
               valueListenable: currentIndex,
               builder: (context, idx, child) {
-                final isSelected = idx == index;
-
-           
+                final bool isSelected = idx == index;
                 return CustomTextWidget(
                   text: tabs[index].tr,
                   maxLines: 3,
                   textAlign: TextAlign.center,
-                  color: idx != index ? null : Get.theme.colorScheme.onSurface,
+                  color: isSelected ? Get.theme.colorScheme.onSurface : null,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                   height: 1,
                 );
               }),

@@ -1,5 +1,4 @@
-import 'package:flutter/widgets.dart';
-import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppContainer extends StatelessWidget {
@@ -51,32 +50,46 @@ class AppContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget container = Container(
+    final BorderRadius resolvedBorderRadius =
+        BorderRadius.circular((borderRadius ?? 24).r);
+
+    final Widget container = Container(
       width: width,
       height: height,
       margin: margin ?? EdgeInsets.all(10.r),
       padding: padding ?? EdgeInsets.all(10.r),
       decoration: decoration ??
           BoxDecoration(
-            color: color ?? Colors.white,
-            borderRadius: BorderRadius.circular((borderRadius ?? 24).r),
+            color: color ?? Theme.of(context).colorScheme.surface,
+            borderRadius: resolvedBorderRadius,
           ),
       child: child,
     );
 
-    if (isLiquid) {
-      return Neumorphic(
-        style: NeumorphicStyle(
-          shape: NeumorphicShape.concave,
-          depth: 8,
-          intensity: 0.6,
-          boxShape: NeumorphicBoxShape.roundRect(
-              BorderRadius.circular((borderRadius ?? 24).r)),
-        ),
-        child: container,
-      );
-    }
+    if (!isLiquid) return container;
 
-    return container;
+    final Color shadowColor =
+        (color ?? Theme.of(context).colorScheme.surface).withValues(alpha: 0.6);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: resolvedBorderRadius,
+        boxShadow: [
+          BoxShadow(
+            color: shadowColor,
+            blurRadius: 16.r,
+            spreadRadius: 0,
+            offset: Offset(0, 8.h),
+          ),
+          BoxShadow(
+            color: Colors.white.withValues(alpha: 0.4),
+            blurRadius: 12.r,
+            spreadRadius: -6.r,
+            offset: Offset(0, -4.h),
+          ),
+        ],
+      ),
+      child: container,
+    );
   }
 }

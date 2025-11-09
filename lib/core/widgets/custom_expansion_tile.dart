@@ -15,8 +15,6 @@ class CustomExpansionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = Get.theme.primaryColor.withAlpha(150);
-
     return CustomExpansionDesign(
       text: title,
       children: [

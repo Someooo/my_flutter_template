@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
+
 import 'circular_gauge_widget.dart';
 
 class AppLiquidButtontoHome extends StatelessWidget {
   final Widget? child;
   final VoidCallback? onTap;
-  final NeumorphicShape? shape;
   final double depth;
-  final NeumorphicBoxShape? boxShape;
+  final BorderRadius? borderRadius;
   final Color? color;
   final double? intensity;
   final EdgeInsets? padding;
@@ -37,9 +36,8 @@ class AppLiquidButtontoHome extends StatelessWidget {
       {super.key,
       this.child,
       this.onTap,
-      this.shape,
       this.depth = -5,
-      this.boxShape,
+      this.borderRadius,
       this.color,
       this.intensity,
       this.padding,
@@ -81,18 +79,13 @@ class AppLiquidButtontoHome extends StatelessWidget {
       children: [
         SizedBox(
           height: 80, // Fixed height for consistent alignment
-          child: NeumorphicButton(
+          child: _LiquidButtonContainer(
+            depth: depth,
+            borderRadius: borderRadius ?? BorderRadius.circular(15),
+            color: color,
+            intensity: intensity,
             padding: padding,
-            style: NeumorphicStyle(
-              depth: depth,
-              boxShape: boxShape ??
-                  NeumorphicBoxShape.roundRect(BorderRadius.circular(15)),
-              shape: shape ?? NeumorphicShape.concave,
-              color: color ?? const Color(0xFFF7F7F7),
-              intensity: intensity ?? 0.4,
-              lightSource: const LightSource(1, 1),
-            ),
-            onPressed: onTap,
+            onTap: onTap,
             child: content,
           ),
         ),
@@ -185,5 +178,68 @@ class ArcPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return oldDelegate is ArcPainter &&
         (oldDelegate.color != color || oldDelegate.strokeWidth != strokeWidth);
+  }
+}
+
+class _LiquidButtonContainer extends StatelessWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+  final double depth;
+  final BorderRadius borderRadius;
+  final Color? color;
+  final double? intensity;
+  final EdgeInsets? padding;
+
+  const _LiquidButtonContainer({
+    required this.child,
+    required this.onTap,
+    required this.depth,
+    required this.borderRadius,
+    required this.color,
+    required this.intensity,
+    required this.padding,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final double positiveDepth = depth.abs();
+    final double resolvedIntensity = (intensity ?? 0.4).clamp(0, 1);
+
+    return Material(
+      color: Colors.transparent,
+      borderRadius: borderRadius,
+      child: InkWell(
+        borderRadius: borderRadius,
+        onTap: onTap,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: borderRadius,
+            color: color ?? Theme.of(context).colorScheme.surface,
+            boxShadow: depth == 0
+                ? null
+                : [
+                    BoxShadow(
+                      color: Colors.black.withValues(
+                        alpha: (0.08 + resolvedIntensity * 0.2).clamp(0, 1),
+                      ),
+                      blurRadius: positiveDepth * 4,
+                      offset: Offset(0, positiveDepth),
+                    ),
+                    BoxShadow(
+                      color: Colors.white.withValues(
+                        alpha: (0.5 - resolvedIntensity.clamp(0, 0.4)).clamp(0, 1),
+                      ),
+                      blurRadius: positiveDepth * 3,
+                      offset: Offset(0, -positiveDepth / 1.5),
+                    ),
+                  ],
+          ),
+          child: Padding(
+            padding: padding ?? const EdgeInsets.all(12),
+            child: Center(child: child),
+          ),
+        ),
+      ),
+    );
   }
 }

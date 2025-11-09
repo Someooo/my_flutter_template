@@ -28,7 +28,7 @@ class CircularGaugeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: size,
       height: size,
       child: CustomPaint(
@@ -105,7 +105,7 @@ class CircularGaugePainter extends CustomPainter {
 
     // Draw base arc (lighter shade of number color)
     final basePaint = Paint()
-      ..color = textColor.withOpacity(0.3) // Lighter shade of the number color
+      ..color = textColor.withValues(alpha: 0.3) // Lighter shade of the number color
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -142,56 +142,6 @@ class CircularGaugePainter extends CustomPainter {
   }
 
   // Simple trigonometric functions to avoid math import issues
-  double _cos(double radians) {
-    // Approximation for common angles
-    if (radians == 0) return 1.0;
-    if (radians == 3.14159 / 2) return 0.0;
-    if (radians == 3.14159) return -1.0;
-    if (radians == 3 * 3.14159 / 2) return 0.0;
-    
-    // For other angles, use a simple approximation
-    return 1 - (radians * radians) / 2 + (radians * radians * radians * radians) / 24;
-  }
-
-  double _sin(double radians) {
-    // Approximation for common angles
-    if (radians == 0) return 0.0;
-    if (radians == 3.14159 / 2) return 1.0;
-    if (radians == 3.14159) return 0.0;
-    if (radians == 3 * 3.14159 / 2) return -1.0;
-    
-    // For other angles, use a simple approximation
-    return radians - (radians * radians * radians) / 6 + (radians * radians * radians * radians * radians) / 120;
-  }
-
-  void _drawLabel(Canvas canvas, Offset center, double radius, double angle, String text) {
-    final labelRadius = radius + 20;
-    final radians = angle * 3.14159 / 180;
-    final labelX = center.dx + labelRadius * _cos(radians);
-    final labelY = center.dy + labelRadius * _sin(radians);
-
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: TextStyle(
-          color: textColor,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    );
-
-    textPainter.layout();
-    textPainter.paint(
-      canvas,
-      Offset(
-        labelX - textPainter.width / 2,
-        labelY - textPainter.height / 2,
-      ),
-    );
-  }
-
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return oldDelegate is CircularGaugePainter &&

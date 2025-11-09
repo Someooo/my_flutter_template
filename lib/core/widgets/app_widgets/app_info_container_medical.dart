@@ -54,7 +54,8 @@ class AppInfoContainerMedical extends StatelessWidget {
               boxShadow: showShadow
                   ? [
                       BoxShadow(
-                        color: shadowColor ?? Colors.grey.withOpacity(0.3),
+                        color: shadowColor ??
+                            Colors.grey.withValues(alpha: 0.3),
                         blurRadius: shadowBlurRadius ?? 8.0.r,
                         spreadRadius: shadowSpreadRadius ?? 0.0.r,
                         offset: shadowOffset ?? Offset(0, 2.h),

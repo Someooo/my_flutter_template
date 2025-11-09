@@ -46,20 +46,21 @@ class AppScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppLightColors.primaryLightColor,
-      drawerScrimColor: Colors.white.withOpacity(0.9),
+      drawerScrimColor: Colors.white.withValues(alpha: 0.9),
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       appBar: appBar ??
           (showAppBar
               ? AppBar(
-                  title: titleWidget != null
-                      ? titleWidget
-                      : title != null
+                  title: titleWidget ??
+                      (title != null
                           ? Text(
                               title!,
-                              style: AppTextStyle.style16B
-                                  .copyWith(color: Colors.black , fontSize: Responsive.isTablet? 30 : 16),
+                              style: AppTextStyle.style16B.copyWith(
+                                color: Colors.black,
+                                fontSize: Responsive.isTablet ? 30 : 16,
+                              ),
                             )
-                          : null,
+                          : null),
                   centerTitle: true,
                   actions: actions,
                   automaticallyImplyLeading: showBackButton,

@@ -15,7 +15,7 @@ class GreyContainer extends StatelessWidget {
                       border: Border.all(color: Colors.white),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
+          color: Colors.grey.withValues(alpha: 0.3),
                           blurRadius: 8.0,
                           offset: const Offset(0, 2),
                         ),

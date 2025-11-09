@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_template/config/app_colors.dart';
 
-import '../../../../config/config.dart';
-import '../../../extension/gap_extension.dart';
 import 'button_constant.dart';
 
 class AppButton extends StatelessWidget {
@@ -103,7 +101,6 @@ class AppButton extends StatelessWidget {
                       color: Colors.white,
                       size: AppButtonIconSize.fromButtonHeights(height),
                     ),
-                    8.gap,
                   ],
                 )
               : Container(),
@@ -120,7 +117,6 @@ class AppButton extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                8.gap,
                 Icon(
                   trailingIconAssetName,
                   color: Colors.white,
@@ -192,8 +188,8 @@ class AppButton extends StatelessWidget {
           borderRadius: borderRadius ?? BorderRadius.circular(100),
           child: InkWell(
             borderRadius: borderRadius ?? BorderRadius.circular(100),
-            hoverColor: hoverColor.withOpacity(0.1),
-            focusColor: focusColor.withOpacity(0.1),
+            hoverColor: hoverColor.withValues(alpha: 0.1),
+            focusColor: focusColor.withValues(alpha: 0.1),
             onTap: isLoading ? null : onPressed,
             child: Container(
               decoration: BoxDecoration(
@@ -239,8 +235,8 @@ class AppButton extends StatelessWidget {
         borderRadius: borderRadius ?? BorderRadius.circular(100),
         child: InkWell(
           borderRadius: borderRadius ?? BorderRadius.circular(100),
-          hoverColor: hoverColor,
-          focusColor: focusColor,
+          hoverColor: hoverColor.withValues(alpha: 0.1),
+          focusColor: focusColor.withValues(alpha: 0.1),
           onTap: isLoading ? null : onPressed,
           child: Container(
             // height: height,

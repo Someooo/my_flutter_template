@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/route_manager.dart';
 
 import '../../config/asset_paths.dart';
 import '../utils/responsive.dart';
@@ -59,7 +58,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       // automaticallyImplyLeading ? (leading ?? _buildBackButton()) : null,
       title: appIcon
           ? Image.asset(
-              AssetPaths.horizontalLogo,
+              AssetPaths.youtubePng,
               height: 40.h,
             )
           : titleHeroTag != null
@@ -77,22 +76,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       bottom: bottom,
     );
   }
-
-  Widget _buildBackButton() {
-    return IconButton(
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      onPressed: onBack ??
-          () {
-            Get.back();
-          },
-      icon:  Icon(
-        Icons.arrow_back_ios_new_rounded,
-        size: 23.sp,
-      ),
-    );
-  }
-
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loader1 extends StatelessWidget {
   final Color? color;
@@ -11,7 +10,9 @@ class Loader1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: CircularProgressIndicator.adaptive(
-        backgroundColor: color ?? Colors.black,
+        valueColor: AlwaysStoppedAnimation<Color>(
+          color ?? Theme.of(context).colorScheme.primary,
+        ),
       ),
     );
   }
@@ -20,35 +21,30 @@ class Loader1 extends StatelessWidget {
 class LoadingOverlay extends StatelessWidget {
   final bool isLoading;
   final Widget child;
+  final Color? overlayColor;
 
   const LoadingOverlay({
     super.key,
     required this.isLoading,
     required this.child,
+    this.overlayColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final Color resolvedOverlayColor =
+        overlayColor ?? Colors.black.withValues(alpha: 0.35);
+
     return Stack(
       children: [
         child,
         if (isLoading)
           Positioned.fill(
-            child: Stack(
-              children: [
-                // Blur effect (optional)
-                Container(
-                  color: Colors.black.withValues(alpha: 0.5), // Overlay color with opacity
-                  child: const Center(
-                    child: CircularProgressIndicator(), // Loading indicator
-                  ),
-                ),
-                // Uncomment below if you want a blur effect (requires flutter_blurhash package)
-                // BlurHash(
-                //   hash: 'LEHV6nWB9YUn5pD4s;0t5xX6fRkD6X6Q0', // Example hash, replace with your own
-                //   imageFit: BoxFit.cover,
-                // ),
-              ],
+            child: ColoredBox(
+              color: resolvedOverlayColor,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
             ),
           ),
       ],
@@ -56,26 +52,48 @@ class LoadingOverlay extends StatelessWidget {
   }
 }
 
-class LoadingFadingCircle extends StatelessWidget {
+class LoadingFadingCircle extends StatefulWidget {
   final Color? color;
 
   const LoadingFadingCircle({super.key, this.color});
 
   @override
+  State<LoadingFadingCircle> createState() => _LoadingFadingCircleState();
+}
+
+class _LoadingFadingCircleState extends State<LoadingFadingCircle>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))
+        ..repeat();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final spinkit = SpinKitFadingCircle(
-      color: color ?? Theme.of(context).colorScheme.primary,
-      // itemBuilder: (BuildContext context, int index) {
-      //   return DecoratedBox(
-      //     decoration: BoxDecoration(
-      //       color: index.isEven ? SharedColors.primaryColor : Colors.black,
-      //     ),
-      //   );
-      // },
-    );
+    final Color indicatorColor =
+        widget.color ?? Theme.of(context).colorScheme.primary;
+
     return SizedBox(
       width: 40.w,
-      child: spinkit,
+      height: 40.w,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          final double alpha =
+              (0.4 + 0.6 * _controller.value).clamp(0, 1).toDouble();
+          return CircularProgressIndicator(
+            strokeWidth: 3,
+            valueColor: AlwaysStoppedAnimation<Color>(
+              indicatorColor.withValues(alpha: alpha),
+            ),
+          );
+        },
+      ),
     );
   }
 }

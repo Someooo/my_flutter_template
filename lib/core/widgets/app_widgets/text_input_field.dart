@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../config/app_colors.dart';
-import '../../extension/gap_extension.dart';
 import '../../utils/app_text_style.dart';
 import '../../utils/border.dart';
-import 'button/button_constant.dart';
 
 class AppTextFormField extends StatefulWidget {
   final String? label;
@@ -248,7 +246,6 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
       children: [
         if (widget.label != null) ...[
           Text(widget.label!, style: widget.labelTextStyle ?? AppTextStyle.bodyText),
-          15.gap,
         ],
         ValueListenableBuilder<TextEditingValue>(
             valueListenable: _effectiveController,
@@ -367,7 +364,6 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              6.gap,
               Text(
                 widget.helperText!,
               ),
@@ -377,13 +373,12 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              5.gap,
               Text(
                 widget.errorText!,
               ),
             ],
           ),
-        15.gap,
+       
       ],
     );
   }

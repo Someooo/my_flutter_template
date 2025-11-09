@@ -1,10 +1,9 @@
-import 'package:cached_network_image_plus/flutter_cached_network_image_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/utils/app_text_style.dart';
-import '../../extension/gap_extension.dart';
 import '../../utils/responsive.dart';
+import '../custom_cached_image.dart';
 
 class HcpProfileContainer extends StatelessWidget {
   final String name;
@@ -31,7 +30,13 @@ class HcpProfileContainer extends StatelessWidget {
             borderRadius: BorderRadius.circular(11),
           ),
           child: imageUrl != null
-              ? CacheNetworkImagePlus(imageUrl: imageUrl!,borderRadius: BorderRadius.circular(11),)
+              ? CustomCachedImage(
+                  image: imageUrl!,
+                  height: 60,
+                  width: 60,
+                  borderRadius: BorderRadius.circular(11),
+                  backgroundColor: Colors.transparent,
+                )
               : const Icon(
             Icons.person,
             size: 35,

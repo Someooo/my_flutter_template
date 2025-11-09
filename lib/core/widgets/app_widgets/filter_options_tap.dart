@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../config/app_colors.dart';
-import '../../extension/gap_extension.dart';
 import '../../utils/responsive.dart';
 import '../custom_text_widget.dart';
 import 'button/neumorphic_plus.dart';
@@ -81,7 +80,7 @@ class DynamicFilterWidget extends StatelessWidget {
             ),
           ],
         ),
-        bottomSpacing.gap,
+        SizedBox(height: bottomSpacing.h),
       ],
     );
   }

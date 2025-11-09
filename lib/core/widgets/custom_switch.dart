@@ -25,7 +25,6 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:my_template/config/app_colors.dart';
-import '../../config/config.dart';
 
 class CustomSwitch extends StatelessWidget {
   final void Function(bool)? onChanged;
@@ -48,15 +47,31 @@ class CustomSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color resolvedActiveThumb = activeColor ?? SharedColors.darkBlue;
+    final Color resolvedInactiveThumb =
+        inactiveThumbColor ?? Theme.of(context).colorScheme.error;
+    final Color resolvedActiveTrack =
+        (activeTrackColor ?? SharedColors.primaryColor)
+            .withValues(alpha: 0.5);
+    final Color resolvedInactiveTrack =
+        inactiveTrackColor ?? Theme.of(context).colorScheme.primaryContainer;
+
     return Switch(
       value: value,
       onChanged: onChanged,
-      inactiveThumbColor: inactiveThumbColor ?? Theme.of(context).colorScheme.error,
-      activeColor: activeColor ?? SharedColors.darkBlue,
-      activeTrackColor: activeTrackColor ?? SharedColors.primaryColor.withAlpha(50),
-      trackOutlineColor: WidgetStateProperty.all(
-        inactiveTrackColor ?? Theme.of(context).colorScheme.primaryContainer,
-      ),
+      thumbColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return resolvedActiveThumb;
+        }
+        return resolvedInactiveThumb;
+      }),
+      trackColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return resolvedActiveTrack;
+        }
+        return resolvedInactiveTrack;
+      }),
+      trackOutlineColor: WidgetStateProperty.all(resolvedInactiveTrack),
     );
   }
 }

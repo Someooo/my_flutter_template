@@ -1,5 +1,4 @@
-import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
-import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 
 /// Height constants for responsive AppOvalButton
 class AppOvalButtonHeights {
@@ -146,7 +145,8 @@ class AppOvalButton extends StatelessWidget {
   final Color? color;
   final double? intensity;
   final EdgeInsets? padding;
-  final NeumorphicBoxShape? boxShape;
+  final BorderRadius? borderRadius;
+  final Gradient? backgroundGradient;
 
   /// Standard constructor - maintains full backward compatibility
   const AppOvalButton({
@@ -159,7 +159,8 @@ class AppOvalButton extends StatelessWidget {
     this.color,
     this.intensity,
     this.padding,
-    this.boxShape,
+    this.borderRadius,
+    this.backgroundGradient,
   });
 
   /// Responsive constructor - automatically calculates proportions from height
@@ -182,11 +183,11 @@ class AppOvalButton extends StatelessWidget {
     Color? color,
     double? intensity,
     EdgeInsets? padding, // Optional override
-    NeumorphicBoxShape? boxShape,
+    BorderRadius? borderRadius,
+    Gradient? backgroundGradient,
   }) {
     return AppOvalButton(
       key: key,
-      child: child,
       onTap: onTap,
       width: width ?? AppOvalButtonWidth.fromHeight(height),
       height: height,
@@ -194,27 +195,62 @@ class AppOvalButton extends StatelessWidget {
       color: color,
       intensity: intensity,
       padding: padding ?? AppOvalButtonPadding.fromHeight(height),
-      boxShape: boxShape,
+      borderRadius: borderRadius ?? BorderRadius.circular(height / 2),
+      backgroundGradient: backgroundGradient,
+      child: child,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final BorderRadius resolvedBorderRadius =
+        borderRadius ?? BorderRadius.circular(height / 2);
+    final double resolvedDepth = depth.clamp(0, 10);
+    final double resolvedIntensity = (intensity ?? 0.4).clamp(0, 1);
+
     return SizedBox(
       width: width,
       height: height,
-      child: NeumorphicButton(
-        padding: padding,
-        style: NeumorphicStyle(
-          depth: depth,
-          boxShape: boxShape ?? const NeumorphicBoxShape.stadium(),
-          shape: NeumorphicShape.concave,
-          color: color ?? const Color(0xFFF7F7F7),
-          intensity: intensity ?? 0.4,
-          lightSource: const LightSource(1, 1),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: resolvedBorderRadius,
+        child: InkWell(
+          borderRadius: resolvedBorderRadius,
+          onTap: onTap,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: resolvedBorderRadius,
+              gradient: backgroundGradient,
+              color: backgroundGradient == null
+                  ? (color ?? Theme.of(context).colorScheme.surface)
+                  : null,
+              boxShadow: resolvedDepth <= 0
+                  ? null
+                  : [
+                      BoxShadow(
+                        color: Colors.black.withValues(
+                          alpha: (0.08 + resolvedIntensity * 0.2).clamp(0, 1),
+                        ),
+                        blurRadius: resolvedDepth * 4,
+                        offset: Offset(0, resolvedDepth),
+                      ),
+                      BoxShadow(
+                        color: Colors.white.withValues(alpha: 0.4),
+                        blurRadius: resolvedDepth * 3,
+                        offset: Offset(0, -resolvedDepth / 1.5),
+                      ),
+                    ],
+            ),
+            child: Padding(
+              padding: padding ??
+                  const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+              child: Center(child: child),
+            ),
+          ),
         ),
-        onPressed: onTap,
-        child: Center(child: child),
       ),
     );
   }
