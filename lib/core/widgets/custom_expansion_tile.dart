@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../enums/text_style_enum.dart';
 import 'custom_row.dart';
 import 'custom_text_widget.dart';
-import '../../features/profile/data/models/medical_form_model.dart';
+import '../models/medical_form_model.dart';
 
 class CustomExpansionTile extends StatelessWidget {
   final String title;
