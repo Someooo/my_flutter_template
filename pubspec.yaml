@@ -26,6 +26,7 @@ dependencies:
   intl: ^0.20.2
   equatable: ^2.0.5
   cached_network_image_plus: ^0.0.5
+  flutter_glass_morphism: ^1.0.2
 
 dev_dependencies:
   flutter_test:
@@ -38,6 +39,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/test_test.jpg
   # assets:
   #   - assets/images/
   #   - assets/icons/
