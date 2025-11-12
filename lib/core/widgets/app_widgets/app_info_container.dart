@@ -46,18 +46,18 @@ class AppInfoContainer extends StatelessWidget {
       color: background,
       decoration: (showBorder || showShadow)
           ? BoxDecoration(
-              color: background ?? Colors.white,
+              color:  Colors.white,
               borderRadius: BorderRadius.circular(24.r),
               border: showBorder
                   ? Border.all(
-                      color: borderColor ?? Colors.grey,
+                      color: Colors.grey,
                       width: 1.w,
                     )
                   : null,
               boxShadow: showShadow
                   ? [
                       BoxShadow(
-                        color: shadowColor ?? Colors.grey.withOpacity(0.3),
+                        color:  Colors.grey.withOpacity(0.3),
                         blurRadius: shadowBlurRadius ?? 8.0.r,
                         spreadRadius: shadowSpreadRadius ?? 0.0.r,
                         offset: shadowOffset ?? Offset(0, 2.h),

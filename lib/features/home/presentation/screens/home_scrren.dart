@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:my_template/config/app_colors.dart';
 import 'package:my_template/core/widgets/app_widgets/app_scaffold.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -83,6 +84,10 @@ class _HomeScreenState extends State<HomeScreen> {
             bottom: 32,
             child: GlassNavigationBar(
               width: navigationWidth,
+              showOverlay: _showOverlay,
+              overlayLeft: overlayLeft,
+              overlayWidth: _overlayWidth,
+              navStart: navStart,
               onPanDown: (details) {
                 final desiredLeft = navStart + details.localPosition.dx - (_overlayWidth / 2);
                 _showOverlayAt(desiredLeft, overlayMinLeft, overlayMaxLeft);
@@ -134,6 +139,10 @@ class GlassContainer extends StatelessWidget {
 
 class GlassNavigationBar extends StatelessWidget {
   final double? width;
+  final bool showOverlay;
+  final double? overlayLeft;
+  final double? overlayWidth;
+  final double? navStart;
   final GestureDragDownCallback? onPanDown;
   final GestureDragUpdateCallback? onPanUpdate;
   final GestureDragEndCallback? onPanEnd;
@@ -141,16 +150,45 @@ class GlassNavigationBar extends StatelessWidget {
   const GlassNavigationBar({
     super.key,
     this.width,
+    this.showOverlay = false,
+    this.overlayLeft,
+    this.overlayWidth,
+    this.navStart,
     this.onPanDown,
     this.onPanUpdate,
     this.onPanEnd,
     this.onPanCancel,
   });
 
+  int _getActiveIconIndex(double navWidth) {
+    if (!showOverlay || overlayLeft == null || navStart == null || overlayWidth == null) return -1;
+    
+    // Calculate the center of the overlay
+    final double overlayCenter = overlayLeft! + (overlayWidth! / 2);
+    
+    // Calculate the position relative to the navigation bar
+    final double relativePosition = overlayCenter - navStart!;
+    
+    // Divide navigation bar into 3 equal sections
+    final double sectionWidth = navWidth / 3;
+    
+    // Determine which section the overlay center is in
+    if (relativePosition < sectionWidth) {
+      return 0; // First icon (home)
+    } else if (relativePosition < sectionWidth * 2) {
+      return 1; // Second icon (search)
+    } else {
+      return 2; // Third icon (person)
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double navWidth = width ?? screenWidth * 0.7;
+    final Color primaryColor = AppLightColors.primaryColor;
+    final int activeIconIndex = _getActiveIconIndex(navWidth);
+    
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onPanDown: onPanDown,
@@ -167,10 +205,22 @@ class GlassNavigationBar extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Icon(Icons.home_rounded, color: Colors.white, size: 28),
-                  Icon(Icons.search_rounded, color: Colors.white, size: 28),
-                  Icon(Icons.person_rounded, color: Colors.white, size: 28),
+                children: [
+                  Icon(
+                    Icons.home_rounded,
+                    color: activeIconIndex == 0 ? primaryColor : Colors.white,
+                    size: 28,
+                  ),
+                  Icon(
+                    Icons.search_rounded,
+                    color: activeIconIndex == 1 ? primaryColor : Colors.white,
+                    size: 28,
+                  ),
+                  Icon(
+                    Icons.person_rounded,
+                    color: activeIconIndex == 2 ? primaryColor : Colors.white,
+                    size: 28,
+                  ),
                 ],
               ),
             ),
