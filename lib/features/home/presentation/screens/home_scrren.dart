@@ -139,7 +139,7 @@ class GlassContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(100),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
@@ -147,7 +147,7 @@ class GlassContainer extends StatelessWidget {
           height: height,
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(100),
             border: Border.all(
               width: 1.5,
               color: Colors.white.withValues(alpha: 0.3)
@@ -215,16 +215,16 @@ class GlassNavigationBar extends StatelessWidget {
     final Color primaryColor = AppLightColors.primaryColor;
     final int activeIconIndex = _getActiveIconIndex(navWidth);
     
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onPanDown: onPanDown,
-      onPanUpdate: onPanUpdate,
-      onPanEnd: onPanEnd,
-      onPanCancel: onPanCancel,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          GlassContainer(
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onPanDown: onPanDown,
+          onPanUpdate: onPanUpdate,
+          onPanEnd: onPanEnd,
+          onPanCancel: onPanCancel,
+          child: GlassContainer(
             width: navWidth,
             height: 70,
             child: Padding(
@@ -251,10 +251,10 @@ class GlassNavigationBar extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 16),
-          GlassCircleButton(onTap: onCircleButtonTap),
-        ],
-      ),
+        ),
+        const SizedBox(width: 16),
+        GlassCircleButton(onTap: onCircleButtonTap),
+      ],
     );
   }
 }
@@ -310,7 +310,9 @@ class GlassCircleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
+      onTapDown: (_) {}, // Consume the tap down event
       child: ClipOval(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -343,7 +345,7 @@ class ClassContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(100),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
@@ -351,7 +353,7 @@ class ClassContainer extends StatelessWidget {
           height: 150,
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(100),
             border: Border.all(
               width: 1.5,
               color: Colors.white.withValues(alpha: 0.3),
@@ -359,7 +361,7 @@ class ClassContainer extends StatelessWidget {
           ),
           child: const Center(
             child: Text(
-              'Glass Container',
+              'Glass ',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24,
