@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static const double _overlayHeight = 80;
   static const double _navigationBottomPadding = 32;
   static const double _navigationHeight = 70;
+  static const double _overlayExtension = 10; // How much overlay extends outside nav bar
 
   bool _showOverlay = false;
   double? _overlayLeft;
@@ -47,86 +48,97 @@ class _HomeScreenState extends State<HomeScreen> {
     final double navigationWidth = screenWidth * 0.7;
     final double navStart = 24;
     final double navEnd = navStart + navigationWidth;
-    final double initialOverlayLeft = navStart + (navigationWidth - _overlayWidth) / 2;
-    final double overlayMinLeft = navStart;
-    final double overlayMaxLeft = navEnd - _overlayWidth;
-    final double overlayBottom = _navigationBottomPadding + (_navigationHeight - _overlayHeight) / 2;
+    final double initialOverlayLeft =
+        navStart + (navigationWidth - _overlayWidth) / 2;
+    // Allow overlay to extend slightly outside navigation bar
+    final double overlayMinLeft = navStart - _overlayExtension;
+    final double overlayMaxLeft = navEnd - _overlayWidth + _overlayExtension;
+    final double overlayBottom =
+        _navigationBottomPadding + (_navigationHeight - _overlayHeight) / 2;
 
     final double overlayLeft = _overlayLeft ?? initialOverlayLeft;
 
     return AppScaffold(
-      showAppBar: false,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/test_test.jpg'),
-                  fit: BoxFit.cover,
+        showAppBar: false,
+        body: Stack(
+          children: [
+            // الخلفية
+            Positioned.fill(
+              child: Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/test_test.jpg'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
-          ),
-          Center(
-            child: IgnorePointer(
-              ignoring: !_showClassContainer,
-              child: AnimatedOpacity(
-                opacity: _showClassContainer ? 1 : 0,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOut,
-                child: AnimatedScale(
-                  scale: _showClassContainer ? 1 : 0.8,
+
+            // ClassContainer في الوسط
+            Center(
+              child: IgnorePointer(
+                ignoring: !_showClassContainer,
+                child: AnimatedOpacity(
+                  opacity: _showClassContainer ? 1 : 0,
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.easeInOut,
-                  child: const ClassContainer(),
+                  child: AnimatedScale(
+                    scale: _showClassContainer ? 1 : 0.8,
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeInOut,
+                    child: const ClassContainer(),
+                  ),
                 ),
               ),
             ),
-          ),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 120),
-            curve: Curves.easeOut,
-            left: overlayLeft,
-            bottom: overlayBottom,
-            child: IgnorePointer(
-              ignoring: !_showOverlay,
-              child: AnimatedOpacity(
-                opacity: _showOverlay ? 1 : 0,
-                duration: const Duration(milliseconds: 150),
-                curve: Curves.easeOut,
-                child: GlassActionWidget(
-                  width: _overlayWidth,
-                  height: _overlayHeight,
+
+            // Navigation Bar
+            Positioned(
+              left: navStart,
+              bottom: 32,
+              child: GlassNavigationBar(
+                width: navigationWidth,
+                showOverlay: _showOverlay,
+                overlayLeft: overlayLeft,
+                overlayWidth: _overlayWidth,
+                navStart: navStart,
+                onPanDown: (details) {
+                  final desiredLeft =
+                      navStart + details.localPosition.dx - (_overlayWidth / 2);
+                  _showOverlayAt(desiredLeft, overlayMinLeft, overlayMaxLeft);
+                },
+                onPanUpdate: (details) {
+                  final desiredLeft =
+                      navStart + details.localPosition.dx - (_overlayWidth / 2);
+                  _showOverlayAt(desiredLeft, overlayMinLeft, overlayMaxLeft);
+                },
+                onPanEnd: (_) => _hideOverlay(),
+                onPanCancel: _hideOverlay,
+                onCircleButtonTap: _toggleClassContainer,
+              ),
+            ),
+
+            // Overlay فوق الـ Navigation Bar
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 120),
+              curve: Curves.easeOut,
+              left: overlayLeft,
+              bottom: overlayBottom,
+              child: IgnorePointer(
+                ignoring: !_showOverlay,
+                child: AnimatedOpacity(
+                  opacity: _showOverlay ? 1 : 0,
+                  duration: const Duration(milliseconds: 150),
+                  curve: Curves.easeOut,
+                  child: GlassActionWidget(
+                    width: _overlayWidth,
+                    height: _overlayHeight,
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            left: navStart,
-            bottom: 32,
-            child: GlassNavigationBar(
-              width: navigationWidth,
-              showOverlay: _showOverlay,
-              overlayLeft: overlayLeft,
-              overlayWidth: _overlayWidth,
-              navStart: navStart,
-              onPanDown: (details) {
-                final desiredLeft = navStart + details.localPosition.dx - (_overlayWidth / 2);
-                _showOverlayAt(desiredLeft, overlayMinLeft, overlayMaxLeft);
-              },
-              onPanUpdate: (details) {
-                final desiredLeft = navStart + details.localPosition.dx - (_overlayWidth / 2);
-                _showOverlayAt(desiredLeft, overlayMinLeft, overlayMaxLeft);
-              },
-              onPanEnd: (_) => _hideOverlay(),
-              onPanCancel: _hideOverlay,
-              onCircleButtonTap: _toggleClassContainer,
-            ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ));
   }
 }
 
@@ -134,30 +146,46 @@ class GlassContainer extends StatelessWidget {
   final Widget child;
   final double width;
   final double height;
+  final bool enableBlur;
 
-  const GlassContainer({super.key, required this.width, required this.height, required this.child});
+  const GlassContainer({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.child,
+    this.enableBlur = true,
+  });
+
   @override
   Widget build(BuildContext context) {
+    final Widget container = ClipRRect(
+      borderRadius: BorderRadius.circular(100),
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(100),
+          border: Border.all(
+            width: 1.5,
+            color: Colors.white.withValues(alpha: 0.3),
+          ),
+        ),
+        child: child,
+      ),
+    );
+
+    if (!enableBlur) {
+      return container;
+    }
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(100),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(100),
-            border: Border.all(
-              width: 1.5,
-              color: Colors.white.withValues(alpha: 0.3)
-              ),
-        ),
-          child: child,
-        ),
-      
+        child: container,
       ),
-      );
+    );
   }
 }
 
@@ -187,17 +215,20 @@ class GlassNavigationBar extends StatelessWidget {
   });
 
   int _getActiveIconIndex(double navWidth) {
-    if (!showOverlay || overlayLeft == null || navStart == null || overlayWidth == null) return -1;
-    
+    if (!showOverlay ||
+        overlayLeft == null ||
+        navStart == null ||
+        overlayWidth == null) return -1;
+
     // Calculate the center of the overlay
     final double overlayCenter = overlayLeft! + (overlayWidth! / 2);
-    
+
     // Calculate the position relative to the navigation bar
     final double relativePosition = overlayCenter - navStart!;
-    
+
     // Divide navigation bar into 3 equal sections
     final double sectionWidth = navWidth / 3;
-    
+
     // Determine which section the overlay center is in
     if (relativePosition < sectionWidth) {
       return 0; // First icon (home)
@@ -214,7 +245,7 @@ class GlassNavigationBar extends StatelessWidget {
     final double navWidth = width ?? screenWidth * 0.7;
     final Color primaryColor = AppLightColors.primaryColor;
     final int activeIconIndex = _getActiveIconIndex(navWidth);
-    
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -227,6 +258,7 @@ class GlassNavigationBar extends StatelessWidget {
           child: GlassContainer(
             width: navWidth,
             height: 70,
+            enableBlur: false,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -275,26 +307,23 @@ class GlassActionWidget extends StatelessWidget {
       width: width,
       height: height,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(26),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.18),
-              borderRadius: BorderRadius.circular(26),
-              border: Border.all(
-                width: 1.4,
-                color: Colors.white.withValues(alpha: 0.28),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.12),
-                  blurRadius: 12,
-                  spreadRadius: 1,
-                  offset: const Offset(0, 6),
-                ),
-              ],
+        borderRadius: BorderRadius.circular(100),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(100),
+            border: Border.all(
+              width: 1.4,
+              color: Colors.white.withValues(alpha: 0.15),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.08),
+                blurRadius: 8,
+                spreadRadius: 1,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
         ),
       ),
@@ -304,7 +333,7 @@ class GlassActionWidget extends StatelessWidget {
 
 class GlassCircleButton extends StatelessWidget {
   final VoidCallback? onTap;
-  
+
   const GlassCircleButton({super.key, this.onTap});
 
   @override
@@ -361,7 +390,7 @@ class ClassContainer extends StatelessWidget {
           ),
           child: const Center(
             child: Text(
-              'Glass ',
+              'Glass',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24,
