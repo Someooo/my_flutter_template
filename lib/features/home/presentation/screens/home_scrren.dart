@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const double _overlayWidth = 120;
+  static const double _overlayWidth = 80;
   static const double _overlayHeight = 80;
   static const double _navigationBottomPadding = 32;
   static const double _navigationHeight = 70;
@@ -60,6 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+          ),
+          const Center(
+            child: ClassContainer(),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 120),
@@ -299,6 +302,42 @@ class GlassCircleButton extends StatelessWidget {
             Icons.star_rounded,
             color: Colors.white,
             size: 30,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ClassContainer extends StatelessWidget {
+  const ClassContainer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          width: 180,
+          height: 150,
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              width: 1.5,
+              color: Colors.white.withValues(alpha: 0.3),
+            ),
+          ),
+          child: const Center(
+            child: Text(
+              'Glass Container',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       ),
