@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   static const double _overlayWidth = 80;
-  static const double _overlayHeight = 80;
+  static const double _overlayHeight = 60;
   static const double _navigationBottomPadding = 32;
   static const double _navigationHeight = 70;
   static const double _overlayExtension = 10; 
@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final double navigationWidth = screenWidth * 0.7;
+    final double navigationWidth = screenWidth * 0.6;
     final double navStart = 24;
     final double navEnd = navStart + navigationWidth;
     final double initialOverlayLeft =
@@ -92,8 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
            
             Positioned(
-              left: navStart,
+              left: 10,
               bottom: 32,
+              right: 10,
               child: GlassNavigationBar(
                 width: navigationWidth,
                 showOverlay: _showOverlay,
@@ -255,30 +256,51 @@ class GlassNavigationBar extends StatelessWidget {
           onPanCancel: onPanCancel,
           child: GlassContainer(
             width: navWidth,
-            height: 70,
+            height: 67,
             enableBlur: false,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.home_rounded,
-                    color: activeIconIndex == 0 ? primaryColor : Colors.white,
-                    size: 28,
+            child: Column(
+              children: [
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // SizedBox(height: 10),
+                      Column(
+                        children: [
+                          Icon(
+                            Icons.home_rounded,
+                            color: activeIconIndex == 0 ? primaryColor : Colors.white,
+                            size: 28,
+                          ),
+                          Text('Home', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),)
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Icon(
+                            Icons.search_rounded,
+                            color: activeIconIndex == 1 ? primaryColor : Colors.white,
+                            size: 28,
+                          ),
+                          Text('Search', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),)
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Icon(
+                            Icons.person_rounded,
+                            color: activeIconIndex == 2 ? primaryColor : Colors.white,
+                            size: 28,
+                          ),
+                          Text('Profile', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),)
+                        ],
+                      ),
+                    ],
                   ),
-                  Icon(
-                    Icons.search_rounded,
-                    color: activeIconIndex == 1 ? primaryColor : Colors.white,
-                    size: 28,
-                  ),
-                  Icon(
-                    Icons.person_rounded,
-                    color: activeIconIndex == 2 ? primaryColor : Colors.white,
-                    size: 28,
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
