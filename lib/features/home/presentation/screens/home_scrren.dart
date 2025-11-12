@@ -19,6 +19,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool _showOverlay = false;
   double? _overlayLeft;
+  bool _showClassContainer = false;
+
+  void _toggleClassContainer() {
+    setState(() {
+      _showClassContainer = !_showClassContainer;
+    });
+  }
 
   void _showOverlayAt(double desiredLeft, double minLeft, double maxLeft) {
     setState(() {
@@ -61,8 +68,21 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          const Center(
-            child: ClassContainer(),
+          Center(
+            child: IgnorePointer(
+              ignoring: !_showClassContainer,
+              child: AnimatedOpacity(
+                opacity: _showClassContainer ? 1 : 0,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+                child: AnimatedScale(
+                  scale: _showClassContainer ? 1 : 0.8,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  child: const ClassContainer(),
+                ),
+              ),
+            ),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 120),
@@ -101,6 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               onPanEnd: (_) => _hideOverlay(),
               onPanCancel: _hideOverlay,
+              onCircleButtonTap: _toggleClassContainer,
             ),
           ),
         ],
@@ -150,6 +171,7 @@ class GlassNavigationBar extends StatelessWidget {
   final GestureDragUpdateCallback? onPanUpdate;
   final GestureDragEndCallback? onPanEnd;
   final VoidCallback? onPanCancel;
+  final VoidCallback? onCircleButtonTap;
   const GlassNavigationBar({
     super.key,
     this.width,
@@ -161,6 +183,7 @@ class GlassNavigationBar extends StatelessWidget {
     this.onPanUpdate,
     this.onPanEnd,
     this.onPanCancel,
+    this.onCircleButtonTap,
   });
 
   int _getActiveIconIndex(double navWidth) {
@@ -229,7 +252,7 @@ class GlassNavigationBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          const GlassCircleButton(),
+          GlassCircleButton(onTap: onCircleButtonTap),
         ],
       ),
     );
@@ -280,28 +303,33 @@ class GlassActionWidget extends StatelessWidget {
 }
 
 class GlassCircleButton extends StatelessWidget {
-  const GlassCircleButton({super.key});
+  final VoidCallback? onTap;
+  
+  const GlassCircleButton({super.key, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return ClipOval(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          width: 70,
-          height: 70,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white.withValues(alpha: 0.2),
-            border: Border.all(
-              width: 1.5,
-              color: Colors.white.withValues(alpha: 0.3),
+    return GestureDetector(
+      onTap: onTap,
+      child: ClipOval(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withValues(alpha: 0.2),
+              border: Border.all(
+                width: 1.5,
+                color: Colors.white.withValues(alpha: 0.3),
+              ),
             ),
-          ),
-          child: const Icon(
-            Icons.star_rounded,
-            color: Colors.white,
-            size: 30,
+            child: const Icon(
+              Icons.star_rounded,
+              color: Colors.white,
+              size: 30,
+            ),
           ),
         ),
       ),
