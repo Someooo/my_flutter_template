@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static const double _overlayHeight = 80;
   static const double _navigationBottomPadding = 32;
   static const double _navigationHeight = 70;
-  static const double _overlayExtension = 10; // How much overlay extends outside nav bar
+  static const double _overlayExtension = 10; 
 
   bool _showOverlay = false;
   double? _overlayLeft;
@@ -50,7 +50,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final double navEnd = navStart + navigationWidth;
     final double initialOverlayLeft =
         navStart + (navigationWidth - _overlayWidth) / 2;
-    // Allow overlay to extend slightly outside navigation bar
     final double overlayMinLeft = navStart - _overlayExtension;
     final double overlayMaxLeft = navEnd - _overlayWidth + _overlayExtension;
     final double overlayBottom =
@@ -62,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
         showAppBar: false,
         body: Stack(
           children: [
-            // الخلفية
+     
             Positioned.fill(
               child: Container(
                 decoration: const BoxDecoration(
@@ -74,7 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // ClassContainer في الوسط
             Center(
               child: IgnorePointer(
                 ignoring: !_showClassContainer,
@@ -92,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Navigation Bar
+           
             Positioned(
               left: navStart,
               bottom: 32,
@@ -118,7 +116,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Overlay فوق الـ Navigation Bar
             AnimatedPositioned(
               duration: const Duration(milliseconds: 120),
               curve: Curves.easeOut,
@@ -138,7 +135,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ],
-        ));
+        )
+        );
   }
 }
 
@@ -220,22 +218,22 @@ class GlassNavigationBar extends StatelessWidget {
         navStart == null ||
         overlayWidth == null) return -1;
 
-    // Calculate the center of the overlay
+   
     final double overlayCenter = overlayLeft! + (overlayWidth! / 2);
 
-    // Calculate the position relative to the navigation bar
+  
     final double relativePosition = overlayCenter - navStart!;
 
-    // Divide navigation bar into 3 equal sections
+   
     final double sectionWidth = navWidth / 3;
 
-    // Determine which section the overlay center is in
+
     if (relativePosition < sectionWidth) {
-      return 0; // First icon (home)
+      return 0; 
     } else if (relativePosition < sectionWidth * 2) {
-      return 1; // Second icon (search)
+      return 1; 
     } else {
-      return 2; // Third icon (person)
+      return 2; 
     }
   }
 
@@ -341,7 +339,7 @@ class GlassCircleButton extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      onTapDown: (_) {}, // Consume the tap down event
+      onTapDown: (_) {}, 
       child: ClipOval(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
