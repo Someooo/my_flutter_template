@@ -21,6 +21,7 @@ class AppEntrypoint extends StatelessWidget {
         return GetMaterialApp(
           title: 'My Template App',
           debugShowCheckedModeBanner: false,
+
           initialRoute: AppRoutes.initial,
           getPages: AppRoutes.pages,
           theme: AppTheme.light,
