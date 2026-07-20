@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 class ToastUtils {
   // Show error snackbar
   static void showError(String error) {
-    // Ensure that the controller is initialized before calling `closeAllSnackbars`
+    if (!_hasOverlay) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => showError(error));
+      return;
+    }
     if (Get.isSnackbarOpen) {
-      // You can delay this action to allow the snackbar controller to be ready.
       Future.delayed(Duration.zero, () => Get.closeAllSnackbars());
     }
     Get.rawSnackbar(
@@ -22,8 +24,11 @@ class ToastUtils {
 
   // Show success snackbar
   static void showSuccess(String message) {
+    if (!_hasOverlay) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => showSuccess(message));
+      return;
+    }
     if (Get.isSnackbarOpen) {
-      // Same as above, make sure to close snackbars with a delay to ensure initialization
       Future.delayed(Duration.zero, () => Get.closeAllSnackbars());
     }
     Get.rawSnackbar(
@@ -36,6 +41,7 @@ class ToastUtils {
       isDismissible: true,
     );
   }
+
 
   // Show error snackbar with Get.snackbar format
   static void showErrorSnackbar(String title, String message) {
@@ -79,43 +85,72 @@ class ToastUtils {
     );
   }
 
+  static bool get _hasOverlay =>
+      Get.overlayContext != null && Get.key.currentState?.overlay != null;
+
   // Connectivity snackbars
   static void showNoInternetSnackbar() {
-    if (Get.isSnackbarOpen) {
-      Get.closeCurrentSnackbar();
+    try {
+      if (!_hasOverlay) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showNoInternetSnackbar();
+        });
+        return;
+      }
+      if (Get.isSnackbarOpen) {
+        Get.closeCurrentSnackbar();
+      }
+      Get.rawSnackbar(
+        message: 'Please check your internet connection.',
+        backgroundColor: Colors.red.shade700,
+        icon: const Icon(Icons.wifi_off_rounded, color: Colors.white),
+        snackPosition: SnackPosition.TOP,
+        margin: const EdgeInsets.all(12),
+        borderRadius: 8,
+        duration: const Duration(days: 1),
+        isDismissible: false,
+      );
+    } catch (_) {
+      // Safe fallback handled by ConnectivityBannerWidget
     }
-    Get.rawSnackbar(
-      message: 'Please check your internet connection.',
-      backgroundColor: Colors.red.shade700,
-      icon: const Icon(Icons.wifi_off_rounded, color: Colors.white),
-      snackPosition: SnackPosition.TOP,
-      margin: const EdgeInsets.all(12),
-      borderRadius: 8,
-      duration: const Duration(days: 1),
-      isDismissible: false,
-    );
   }
 
   static void showInternetRestoredSnackbar() {
-    if (Get.isSnackbarOpen) {
-      Get.closeCurrentSnackbar();
+    try {
+      if (!_hasOverlay) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showInternetRestoredSnackbar();
+        });
+        return;
+      }
+      if (Get.isSnackbarOpen) {
+        Get.closeCurrentSnackbar();
+      }
+      Get.rawSnackbar(
+        message: 'Internet connection restored.',
+        backgroundColor: Colors.green.shade700,
+        icon: const Icon(Icons.wifi_rounded, color: Colors.white),
+        snackPosition: SnackPosition.TOP,
+        margin: const EdgeInsets.all(12),
+        borderRadius: 8,
+        duration: const Duration(seconds: 3),
+        isDismissible: true,
+      );
+    } catch (_) {
+      // Safe fallback
     }
-    Get.rawSnackbar(
-      message: 'Internet connection restored.',
-      backgroundColor: Colors.green.shade700,
-      icon: const Icon(Icons.wifi_rounded, color: Colors.white),
-      snackPosition: SnackPosition.TOP,
-      margin: const EdgeInsets.all(12),
-      borderRadius: 8,
-      duration: const Duration(seconds: 3),
-      isDismissible: true,
-    );
   }
 
   static void dismissSnackbar() {
-    if (Get.isSnackbarOpen) {
-      Get.closeCurrentSnackbar();
+    try {
+      if (!_hasOverlay) return;
+      if (Get.isSnackbarOpen) {
+        Get.closeCurrentSnackbar();
+      }
+    } catch (_) {
+      // Safe fallback
     }
   }
 }
+
 

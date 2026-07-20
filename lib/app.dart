@@ -9,6 +9,8 @@ import 'package:my_template/core/localization/app_localization.dart';
 import 'package:my_template/core/controllers/theme_controller.dart';
 import 'package:my_template/core/controllers/language_controller.dart';
 
+import 'package:my_template/core/widgets/connectivity_banner_widget.dart';
+
 class AppEntrypoint extends StatelessWidget {
   const AppEntrypoint({super.key});
 
@@ -30,8 +32,20 @@ class AppEntrypoint extends StatelessWidget {
           translations: AppLocalization(),
           locale: Get.find<LanguageController>().locale,
           fallbackLocale: LanguageController.fallbackLocale,
+          builder: (context, child) {
+            return Scaffold(
+              resizeToAvoidBottomInset: false,
+              body: Column(
+                children: [
+                  const ConnectivityBannerWidget(),
+                  Expanded(child: child ?? const SizedBox()),
+                ],
+              ),
+            );
+          },
         );
       },
     );
   }
 }
+
