@@ -37,7 +37,6 @@ class ProductCardWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Product image ───────────────────────────────────────────────
           Expanded(
             child: Stack(
               children: [
@@ -64,14 +63,11 @@ class ProductCardWidget extends StatelessWidget {
               ],
             ),
           ),
-
-          // ── Product details ─────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Category chip
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -92,7 +88,6 @@ class ProductCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
 
-                // Product name
                 Text(
                   name,
                   maxLines: 2,
