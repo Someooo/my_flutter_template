@@ -37,9 +37,11 @@ class CatalogScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SearchBarWidget(
+                controller: controller.searchTextController,
                 onChanged: controller.onSearchChanged,
               ),
             ),
+
             const SizedBox(height: 8),
             Obx(
               () => CategoryFilterWidget(

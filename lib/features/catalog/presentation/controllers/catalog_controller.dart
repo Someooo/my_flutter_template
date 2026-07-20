@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 
 import '../../data/models/product_model.dart';
 import '../../domain/entities/product_entity.dart';
@@ -22,6 +24,8 @@ class CatalogController extends GetxController {
   final Map<String, RxBool> _favoriteRxMap = {};
   final RxInt _favoriteCount = 0.obs;
   final RxDouble _favoriteTotalPrice = 0.0.obs;
+
+  final TextEditingController searchTextController = TextEditingController();
 
   List<ProductEntity> get filteredProducts => _filteredProducts;
   String get selectedCategory => _selectedCategory.value;
@@ -49,6 +53,7 @@ class CatalogController extends GetxController {
   @override
   void onClose() {
     _debounceTimer?.cancel();
+    searchTextController.dispose();
     super.onClose();
   }
 
@@ -86,6 +91,12 @@ class CatalogController extends GetxController {
 
   void onSearchChanged(String query) {
     _searchQuery.value = query;
+    if (searchTextController.text != query) {
+      searchTextController.value = TextEditingValue(
+        text: query,
+        selection: TextSelection.collapsed(offset: query.length),
+      );
+    }
     _debounceTimer?.cancel();
     _debounceTimer = Timer(_kDebounceDelay, _applyFilters);
   }
@@ -99,10 +110,13 @@ class CatalogController extends GetxController {
 
   void clearFilters() {
     _debounceTimer?.cancel();
+    searchTextController.clear();
     _searchQuery.value = '';
     _selectedCategory.value = '';
     _applyFilters();
+    FocusManager.instance.primaryFocus?.unfocus();
   }
+
 
   void toggleFavorite(String productId) {
     final index = _allProducts.indexWhere((p) => p.id == productId);

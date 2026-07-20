@@ -45,11 +45,15 @@ class CatalogEmptyWidget extends StatelessWidget {
             if (_hasActiveFilters) ...[
               const SizedBox(height: 20),
               OutlinedButton.icon(
-                onPressed: controller.clearFilters,
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  controller.clearFilters();
+                },
                 icon: const Icon(Icons.filter_alt_off_rounded, size: 18),
                 label: const Text('Clear Filters'),
               ),
             ],
+
           ],
         ),
       ),
