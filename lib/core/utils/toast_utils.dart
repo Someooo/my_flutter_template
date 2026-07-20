@@ -78,4 +78,44 @@ class ToastUtils {
       borderRadius: 8,
     );
   }
+
+  // Connectivity snackbars
+  static void showNoInternetSnackbar() {
+    if (Get.isSnackbarOpen) {
+      Get.closeCurrentSnackbar();
+    }
+    Get.rawSnackbar(
+      message: 'Please check your internet connection.',
+      backgroundColor: Colors.red.shade700,
+      icon: const Icon(Icons.wifi_off_rounded, color: Colors.white),
+      snackPosition: SnackPosition.TOP,
+      margin: const EdgeInsets.all(12),
+      borderRadius: 8,
+      duration: const Duration(days: 1),
+      isDismissible: false,
+    );
+  }
+
+  static void showInternetRestoredSnackbar() {
+    if (Get.isSnackbarOpen) {
+      Get.closeCurrentSnackbar();
+    }
+    Get.rawSnackbar(
+      message: 'Internet connection restored.',
+      backgroundColor: Colors.green.shade700,
+      icon: const Icon(Icons.wifi_rounded, color: Colors.white),
+      snackPosition: SnackPosition.TOP,
+      margin: const EdgeInsets.all(12),
+      borderRadius: 8,
+      duration: const Duration(seconds: 3),
+      isDismissible: true,
+    );
+  }
+
+  static void dismissSnackbar() {
+    if (Get.isSnackbarOpen) {
+      Get.closeCurrentSnackbar();
+    }
+  }
 }
+

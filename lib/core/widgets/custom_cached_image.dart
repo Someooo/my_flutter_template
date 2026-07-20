@@ -1,6 +1,7 @@
-
 import 'package:cached_network_image_plus/flutter_cached_network_image_plus.dart';
 import 'package:flutter/material.dart';
+
+import 'image_error_widget.dart';
 
 class CustomCachedImage extends StatelessWidget {
   final String image;
@@ -13,6 +14,7 @@ class CustomCachedImage extends StatelessWidget {
   final bool? noErrorHandler;
   final bool? largePlaceErrorScale;
   final bool asDecoration;
+  final Widget? errorWidget;
 
   // New attribute for elevation
   final double? elevation;
@@ -34,6 +36,7 @@ class CustomCachedImage extends StatelessWidget {
     this.noErrorHandler,
     this.largePlaceErrorScale,
     this.asDecoration = false,
+    this.errorWidget,
     this.borderRadius,
     this.gradient,
     this.backgroundColor,
@@ -88,13 +91,10 @@ class CustomCachedImage extends StatelessWidget {
           );
         }
       },
-      errorWidget: noErrorHandler == true
-          ? const SizedBox.shrink()
-          : const Center(
-              child: Icon(
-                Icons.error,
-              ),
-            ),
+      errorWidget: errorWidget ??
+          (noErrorHandler == true
+              ? const SizedBox.shrink()
+              : ImageErrorWidget(borderRadius: borderRadius)),
     );
   }
 }
